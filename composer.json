@@ -1,5 +1,5 @@
 {
-  "name": "symfony/skeleton",
+  "name": "torq/symfony-skeleton",
   "type": "project",
   "license": "MIT",
   "description": "A minimal Symfony project recommended to create bare bones applications",
