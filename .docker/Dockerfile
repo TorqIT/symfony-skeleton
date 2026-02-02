@@ -16,7 +16,7 @@ COPY --from=composer/composer:2-bin /composer /usr/local/bin/composer
 # dependencies do not change.
 COPY --chown=www-data:www-data /composer.* /var/www/html
 COPY /.docker/composer-install-dependencies.sh /composer-install-dependencies.sh
-COPY /.docker/composer-install-dependencies.sh /composer-install-dependencies.sh
+RUN COMPOSER_NO_DEV=1 /composer-install-dependencies.sh
 
 COPY --chown=www-data:www-data bin/ /var/www/html/bin/
 COPY --chown=www-data:www-data config/ /var/www/html/config/
@@ -28,7 +28,7 @@ COPY --chown=www-data:www-data var/ /var/www/html/var/
 
 RUN set -eux; \
     cd /var/www/html; \
-    runuser -u www-data -- php /usr/local/bin/composer install; \
+    COMPOSER_NO_DEV=1 runuser -u www-data -- php /usr/local/bin/composer install; \
     runuser -u www-data -- /var/www/html/bin/console cache:warmup
 
 WORKDIR /var/www/html
