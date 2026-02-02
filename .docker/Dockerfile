@@ -6,6 +6,7 @@ RUN set -eux; \
     apt-get update -y; \
     apt-get install -y --no-install-recommends nginx supervisor; \
     rm -rf /var/lib/apt/lists/*; \
+    docker-php-ext-install pdo_mysql; \
     usermod -u $UID www-data; \
     groupmod -g $GID www-data;
 

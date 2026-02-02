@@ -5,6 +5,9 @@ services:
     build:
       context: .
       dockerfile: .docker/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
     env_file:
       - .env
     volumes:
@@ -12,3 +15,42 @@ services:
       - ./.docker/php/nginx.conf:/etc/nginx/sites-available/default
     ports:
       - "${NGINX_PORT_EXT}:80"
+
+  db:
+    container_name: ${APP_NAME}-db
+    image: mysql:8.4
+    working_dir: /application
+    command:
+      [
+        mysqld,
+        --character-set-server=utf8mb4,
+        --collation-server=utf8mb4_unicode_520_ci,
+        --innodb-file-per-table=1,
+        --local-infile=1,
+      ]
+    volumes:
+      - database_volume:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_PORT=${MYSQL_PORT}
+    healthcheck:
+      # The service is considered healthy when:
+      # - connection to db can be established, and
+      # - we can run a simple SQL query.
+      test:
+        [
+          "CMD-SHELL",
+          "mysql -h db -u$$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE -e 'SHOW TABLES;'",
+        ]
+      interval: 10s
+      retries: 6
+      start_period: 1m
+      timeout: 3s
+    ports:
+      - "${DATABASE_PORT_EXTERNAL}:${MYSQL_PORT}"
+
+volumes:
+  database_volume:
