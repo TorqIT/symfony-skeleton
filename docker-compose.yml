@@ -1,0 +1,14 @@
+name: $APP_NAME
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www/html
+      - ./.docker/php/nginx.conf:/etc/nginx/sites-available/default
+    ports:
+      - "${NGINX_PORT_EXT}:80"
