@@ -31,7 +31,7 @@ services:
       - ./:/var/www/html
       - ./.docker/php/nginx.conf:/etc/nginx/sites-available/default
     ports:
-      - "${NGINX_PORT_EXT}:80"
+      - "${NGINX_PORT_EXT}:8080"
 
   db:
     container_name: ${APP_NAME}-db
