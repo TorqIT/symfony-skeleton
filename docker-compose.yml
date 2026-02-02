@@ -1,13 +1,30 @@
 name: $APP_NAME
 
 services:
+  init:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+      target: init
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www/html
+      - ./.docker/init/init.sh:/docker/init/init.sh
+      - ./.docker/init/init.local.sh:/docker/init/init.local.sh
+    command: ["/bin/bash", "/docker/init/init.local.sh"]
+
   php:
     build:
       context: .
       dockerfile: .docker/Dockerfile
+      target: php
     depends_on:
-      db:
-        condition: service_healthy
+      init:
+        condition: service_completed_successfully
     env_file:
       - .env
     volumes:
