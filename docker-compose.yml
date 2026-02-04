@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: .docker/Dockerfile
       target: init
+    container_name: ${APP_NAME}-init
     depends_on:
       db:
         condition: service_healthy
@@ -22,6 +23,7 @@ services:
       context: .
       dockerfile: .docker/Dockerfile
       target: php
+    container_name: ${APP_NAME}-php
     depends_on:
       init:
         condition: service_completed_successfully
@@ -34,8 +36,8 @@ services:
       - "${NGINX_PORT_EXT}:8080"
 
   db:
-    container_name: ${APP_NAME}-db
     image: mysql:${MYSQL_SERVER_VERSION}
+    container_name: ${APP_NAME}-db
     working_dir: /application
     command:
       [
