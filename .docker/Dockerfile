@@ -24,7 +24,6 @@ COPY --chown=www-data:www-data migrations/ /var/www/html/migrations/
 COPY --chown=www-data:www-data public/ /var/www/html/public/
 COPY --chown=www-data:www-data src/ /var/www/html/src/
 COPY --chown=www-data:www-data templates/ /var/www/html/templates/
-COPY --chown=www-data:www-data var/ /var/www/html/var/
 
 WORKDIR /var/www/html
 USER www-data
