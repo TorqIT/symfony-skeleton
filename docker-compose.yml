@@ -71,5 +71,13 @@ services:
     ports:
       - "${DATABASE_PORT_EXTERNAL}:${MYSQL_PORT}"
 
+  azure:
+    image: ghcr.io/torqit/symfony-azure-provisioning:0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./.azure/parameters.dev.json:/azure/parameters.dev.json:rw
+      - azure:/root/.azure
+
 volumes:
   database_volume:
+  azure:
