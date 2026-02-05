@@ -1,0 +1,13 @@
+when@dev:
+  flysystem:
+      storages:
+          default.storage:
+              adapter: 'local'
+              options:
+                  directory: '%kernel.project_dir%/var/storage'
+when@prod:
+  flysystem:
+    storages:
+        default.storage:
+            adapter: '@azure_adapter'
+            visibility: 'public'
