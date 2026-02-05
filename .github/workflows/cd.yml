@@ -1,0 +1,23 @@
+name: CD
+on:
+  push:
+    # branches: [prod, test]
+    branches: [ci-cd-and-azure]
+  workflow_dispatch:
+
+concurrency:
+  group: cd__-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  CD:
+    uses: TorqIT/symfony-github-actions-workflows/.github/workflows/cd-azure-container-apps.yml@v0
+    permissions:
+      actions: read
+      contents: read
+    with:
+      # ENVIRONMENT: ${{ github.ref_name == 'prod' && 'production' || 'test' }}
+      ENVIRONMENT: test
+    secrets:
+      SERVICE_PRINCIPAL_ID: ${{ secrets.SERVICE_PRINCIPAL_ID }}
+      SERVICE_PRINCIPAL_PASSWORD: ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }}
