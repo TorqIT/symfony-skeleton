@@ -1,0 +1,14 @@
+monolog:
+  handlers:
+    main:
+      type: rolling_file
+      max_files: 10
+      path: "%kernel.logs_dir%/%kernel.environment%-debug.log"
+      level: debug
+      channels: ["!event", "!doctrine", "!cache"]
+    error:
+      type: rolling_file
+      max_files: 10
+      path: "%kernel.logs_dir%/%kernel.environment%-error.log"
+      level: error
+      channels: ["!event", "!doctrine", "!cache"]
