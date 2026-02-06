@@ -1,0 +1,19 @@
+name: Deactivate old Container Apps revisions
+
+on:
+  # TODO uncomment below to run this workflow in your project
+  # schedule:
+  #   - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  deactivate-old-revisions:
+    uses: TorqIT/symfony-github-actions-workflows/.github/workflows/job-azure-container-apps-deactivate-revisions.yml@v0
+    permissions:
+      contents: read
+      actions: read
+    with:
+      ENVIRONMENTS: "['uat', 'production']"
+    secrets:
+      SERVICE_PRINCIPAL_ID: ${{ secrets.SERVICE_PRINCIPAL_ID }}
+      SERVICE_PRINCIPAL_PASSWORD: ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }}

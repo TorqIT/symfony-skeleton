@@ -1,0 +1,22 @@
+name: CD
+on:
+  # TODO uncomment below to run this workflow in your project
+  # push:
+  #   branches: [production, uat]
+  workflow_dispatch:
+
+concurrency:
+  group: cd__-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  CD:
+    uses: TorqIT/symfony-github-actions-workflows/.github/workflows/cd-azure-container-apps.yml@v0
+    permissions:
+      actions: read
+      contents: read
+    with:
+      ENVIRONMENT: ${{ github.ref_name == 'production' && 'production' || 'uat' }}
+    secrets:
+      SERVICE_PRINCIPAL_ID: ${{ secrets.SERVICE_PRINCIPAL_ID }}
+      SERVICE_PRINCIPAL_PASSWORD: ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }}

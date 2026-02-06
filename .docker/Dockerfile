@@ -11,24 +11,21 @@ RUN set -eux; \
     groupmod -g $GID www-data
 COPY --from=composer/composer:2-bin /composer /usr/local/bin/composer
 
+WORKDIR /var/www/html
+USER www-data
+
 # We copy in the composer files and download dependencies, then in a separate set of statements below copy in the full
 # source directory and run a full composer install. This will take advantage of Docker-build caching when the composer
 # dependencies do not change.
 COPY --chown=www-data:www-data /composer.* /var/www/html
-COPY /.docker/composer-install-dependencies.sh /composer-install-dependencies.sh
+COPY --chown=www-data:www-data /.docker/composer-install-dependencies.sh /composer-install-dependencies.sh
 RUN COMPOSER_NO_DEV=1 /composer-install-dependencies.sh
-
 COPY --chown=www-data:www-data bin/ /var/www/html/bin/
 COPY --chown=www-data:www-data config/ /var/www/html/config/
 COPY --chown=www-data:www-data migrations/ /var/www/html/migrations/
 COPY --chown=www-data:www-data public/ /var/www/html/public/
 COPY --chown=www-data:www-data src/ /var/www/html/src/
 COPY --chown=www-data:www-data templates/ /var/www/html/templates/
-COPY --chown=www-data:www-data var/ /var/www/html/var/
-
-WORKDIR /var/www/html
-USER www-data
-
 RUN set -eux; \
     COMPOSER_NO_DEV=1 php /usr/local/bin/composer install; \
     bin/console cache:warmup

@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: .docker/Dockerfile
       target: init
+    container_name: ${APP_NAME}-init
     depends_on:
       db:
         condition: service_healthy
@@ -22,6 +23,7 @@ services:
       context: .
       dockerfile: .docker/Dockerfile
       target: php
+    container_name: ${APP_NAME}-php
     depends_on:
       init:
         condition: service_completed_successfully
@@ -34,8 +36,8 @@ services:
       - "${NGINX_PORT_EXT}:8080"
 
   db:
-    container_name: ${APP_NAME}-db
     image: mysql:${MYSQL_SERVER_VERSION}
+    container_name: ${APP_NAME}-db
     working_dir: /application
     command:
       [
@@ -69,5 +71,24 @@ services:
     ports:
       - "${DATABASE_PORT_EXTERNAL}:${MYSQL_PORT}"
 
+  frontend:
+    container_name: ${APP_NAME}-frontend
+    image: node:latest
+    working_dir: /frontend
+    volumes:
+      - ./frontend:/frontend:rw
+    command: bash -c "npm install; npm run dev;"
+    user: 1000:1000
+    ports:
+      - "${FRONTEND_PORT_EXTERNAL}:5173"
+
+  azure:
+    image: ghcr.io/torqit/symfony-azure-provisioning:0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./.azure/parameters.dev.json:/azure/parameters.dev.json:rw
+      - azure:/root/.azure
+
 volumes:
   database_volume:
+  azure:
