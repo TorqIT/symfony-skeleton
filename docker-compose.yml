@@ -71,6 +71,16 @@ services:
     ports:
       - "${DATABASE_PORT_EXTERNAL}:${MYSQL_PORT}"
 
+  frontend:
+    container_name: ${APP_NAME}-frontend
+    image: node:latest
+    working_dir: /frontend
+    volumes:
+      - ./frontend:/frontend:rw
+    command: bash -c "npm install; npm run dev;"
+    ports:
+      - "${FRONTEND_PORT_EXTERNAL}:5173"
+
   azure:
     image: ghcr.io/torqit/symfony-azure-provisioning:0
     volumes:
