@@ -21,6 +21,11 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+        arguments:
+            - 'mysql:dbname=%env(DATABASE_NAME)%; host=%env(DATABASE_HOST)%; port=%env(DATABASE_PORT)%'
+            - { db_username: '%env(DATABASE_USER)%', db_password: '%env(DATABASE_PASSWORD)%' }
+
     azure_container_client:
       class: AzureOss\Storage\Blob\BlobContainerClient
       factory: ['App\Flysystem\BlobContainerClientFactory', 'createContainerClient']
