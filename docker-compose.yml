@@ -84,6 +84,7 @@ services:
 
   azure:
     image: ghcr.io/torqit/symfony-azure-provisioning:0
+    profiles: [azure]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./.azure/parameters.dev.json:/azure/parameters.dev.json:rw
